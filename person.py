@@ -21,6 +21,32 @@ cap = cv2.VideoCapture(0)
 face_detected = False
 counter = 0
 last_notification_time = 0
+process_complete = True
+
+def handle_detection():
+    global last_notification_time, process_complete
+    
+    # Play alert sounds
+    pygame.mixer.music.load("alert.mp3")
+    pygame.mixer.music.play()
+    pygame.time.wait(int(pygame.mixer.Sound("alert.mp3").get_length() * 1000))
+    pygame.mixer.music.load("Warning.mp3")
+    pygame.mixer.music.play()
+
+    # Capture and save the frame
+    ret, frame = cap.read()
+    if ret:
+        cv2.imwrite("detected_face.jpg", frame)
+
+        # Send Line notification with image
+        current_time = time.time()
+        if current_time - last_notification_time > 60:  # Limit notifications to once per minute
+            line_notifier.send_image("A face is detected", "detected_face.jpg")
+            last_notification_time = current_time
+
+    # Wait for a moment to allow the process to complete
+    time.sleep(5)
+    process_complete = True
 
 while True:
     ret, frame = cap.read()
@@ -35,32 +61,17 @@ while True:
 
     face_detected_this_frame = len(faces) > 0
 
-    if face_detected_this_frame:
+    if face_detected_this_frame and process_complete:
         if not face_detected:
             face_detected = True
             counter = 0
         counter += 1
         
         if counter == 10:
-            # Play alert sounds
-            pygame.mixer.music.load("alert.mp3")
-            pygame.mixer.music.play()
-            pygame.time.wait(int(pygame.mixer.Sound("alert.mp3").get_length() * 1000))
-            pygame.mixer.music.load("Warning.mp3")
-            pygame.mixer.music.play()
-
-            # Capture and save the frame
-            cv2.imwrite("detected_face.jpg", frame)
-
-            # Send Line notification with image
-            current_time = time.time()
-            if current_time - last_notification_time > 60:  # Limit notifications to once per minute
-                line_notifier.send_image("A face is detected", "detected_face.jpg")
-                last_notification_time = current_time
-
-            # Reset counter
+            process_complete = False
+            handle_detection()
             counter = 0
-    else:
+    elif not face_detected_this_frame:
         face_detected = False
         counter = 0
 
