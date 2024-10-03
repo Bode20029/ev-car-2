@@ -1,6 +1,8 @@
 import requests
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 class LineNotifier:
     def __init__(self):
         self.token = os.environ.get('LINE_NOTIFY_TOKEN')

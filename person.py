@@ -46,7 +46,7 @@ while True:
             pygame.mixer.music.load("alert.mp3")
             pygame.mixer.music.play()
             pygame.time.wait(int(pygame.mixer.Sound("alert.mp3").get_length() * 1000))
-            pygame.mixer.music.load("warning.mp3")
+            pygame.mixer.music.load("Warning.mp3")
             pygame.mixer.music.play()
 
             # Capture and save the frame

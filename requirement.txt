@@ -34,3 +34,5 @@ urllib3
 opencv-python
 ultralytics
 pygame
+python-dotenv
+Jetson.GPIO
