@@ -26,6 +26,7 @@ pyparsing
 python-dateutil
 pytz
 PyYAML
+pymongo
 requests
 scipy
 six
@@ -36,3 +37,5 @@ ultralytics
 pygame
 python-dotenv
 Jetson.GPIO
+serial
+modbus_tk
